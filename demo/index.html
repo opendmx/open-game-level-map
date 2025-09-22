@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Level Map - Demo</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .demo-section {
+            margin-bottom: 50px;
+            padding: 25px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            background: #f8fafc;
+        }
+
+        .demo-section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #4299e1;
+            padding-bottom: 10px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .demo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .demo-item h3 {
+            margin: 0;
+            color: #4a5568;
+            font-size: 1.3em;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #edf2f7;
+            border-radius: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-weight: bold;
+            color: #4a5568;
+            font-size: 0.9em;
+        }
+
+        button, select, input {
+            padding: 8px 15px;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            background: white;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+
+        button:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        select:hover, input:hover {
+            border-color: #4299e1;
+        }
+
+        .event-log {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #1a202c;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .info-box {
+            background: #bee3f8;
+            border: 2px solid #4299e1;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info-box h4 {
+            margin: 0 0 10px 0;
+            color: #2c5282;
+        }
+
+        code {
+            background: #f7fafc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Game Level Map</h1>
+        <p class="subtitle">A reusable web component for game progress visualization</p>
+
+        <div class="demo-section">
+            <h2>🎨 Different Themes</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3>Adventure Theme</h3>
+                    <game-level-map 
+                        levels="8" 
+                        current-level="4" 
+                        completed-levels="3"
+                        theme="adventure"
+                        layout="linear"
+                        show-labels="true">
+                    </game-level-map>
+                </div>
+
+                <div class="demo-item">
+                    <h3>Space Theme</h3>
+                    <game-level-map 
+                        levels="6" 
+                        current-level="3" 
+                        completed-levels="2"
+                        theme="space"
+                        layout="circular"
+                        show-labels="true">
+                    </game-level-map>
+                </div>
+
+                <div class="demo-item">
+                    <h3>Fantasy Theme</h3>
+                    <game-level-map 
+                        levels="10" 
+                        current-level="6" 
+                        completed-levels="5"
+                        theme="fantasy"
+                        layout="branching"
+                        show-labels="true">
+                    </game-level-map>
+                </div>
+
+                <div class="demo-item">
+                    <h3>Retro Theme</h3>
+                    <game-level-map 
+                        levels="7" 
+                        current-level="5" 
+                        completed-levels="4"
+                        theme="retro"
+                        layout="linear"
+                        path-style="zigzag"
+                        show-labels="true">
+                    </game-level-map>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎮 Interactive Demo</h2>
+            <div class="controls">
+                <div class="control-group">
+                    <label>Theme:</label>
+                    <select id="themeSelect">
+                        <option value="adventure">Adventure</option>
+                        <option value="space">Space</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="retro">Retro</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Layout:</label>
+                    <select id="layoutSelect">
+                        <option value="linear">Linear</option>
+                        <option value="circular">Circular</option>
+                        <option value="branching">Branching</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Path Style:</label>
+                    <select id="pathStyleSelect">
+                        <option value="curved">Curved</option>
+                        <option value="straight">Straight</option>
+                        <option value="zigzag">Zigzag</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Size:</label>
+                    <select id="sizeSelect">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Levels:</label>
+                    <input type="number" id="levelsInput" value="8" min="3" max="20">
+                </div>
+
+                <div class="control-group">
+                    <label>Current:</label>
+                    <input type="number" id="currentInput" value="4" min="1" max="20">
+                </div>
+
+                <div class="control-group">
+                    <label>Completed:</label>
+                    <input type="number" id="completedInput" value="3" min="0" max="20">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                <button onclick="progressLevel()">Next Level</button>
+                <button onclick="completeLevel()">Complete Level</button>
+                <button onclick="resetProgress()">Reset</button>
+                <button onclick="randomizeSettings()">Randomize</button>
+            </div>
+
+            <div class="demo-item">
+                <game-level-map 
+                    id="interactiveMap"
+                    levels="8" 
+                    current-level="4" 
+                    completed-levels="3"
+                    theme="adventure"
+                    layout="linear"
+                    show-labels="true"
+                    show-progress="true"
+                    animated="true">
+                </game-level-map>
+            </div>
+
+            <div class="event-log" id="eventLog">
+                <strong>Event Log:</strong><br>
+                Click on level markers or use controls above to see events...
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📐 Different Sizes</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3>Small</h3>
+                    <game-level-map 
+                        levels="5" 
+                        current-level="3" 
+                        completed-levels="2"
+                        theme="space"
+                        size="small">
+                    </game-level-map>
+                </div>
+
+                <div class="demo-item">
+                    <h3>Large</h3>
+                    <game-level-map 
+                        levels="12" 
+                        current-level="7" 
+                        completed-levels="6"
+                        theme="fantasy"
+                        size="large"
+                        layout="circular">
+                    </game-level-map>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🏷️ Custom Level Names</h2>
+            <div class="demo-item">
+                <h3>RPG Adventure</h3>
+                <game-level-map 
+                    levels="6" 
+                    current-level="3" 
+                    completed-levels="2"
+                    theme="fantasy"
+                    layout="linear"
+                    level-names="Village,Forest,Cave,Mountain,Castle,Dragon"
+                    show-labels="true">
+                </game-level-map>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h4>💡 Component Features:</h4>
+            <ul>
+                <li><strong>Customizable:</strong> Configure levels, themes, layouts, and more</li>
+                <li><strong>Interactive:</strong> Click events on level markers</li>
+                <li><strong>Responsive:</strong> Adapts to different screen sizes</li>
+                <li><strong>Comic Style:</strong> Fun, game-like visual design</li>
+                <li><strong>Progress Tracking:</strong> Visual feedback for game progression</li>
+                <li><strong>Framework Agnostic:</strong> Works with any web framework or vanilla JS</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        import GameLevelMap from '../src/game-level-map.js';
+
+        const interactiveMap = document.getElementById('interactiveMap');
+        const eventLog = document.getElementById('eventLog');
+
+        // Event listeners for controls
+        document.getElementById('themeSelect').addEventListener('change', updateMap);
+        document.getElementById('layoutSelect').addEventListener('change', updateMap);
+        document.getElementById('pathStyleSelect').addEventListener('change', updateMap);
+        document.getElementById('sizeSelect').addEventListener('change', updateMap);
+        document.getElementById('levelsInput').addEventListener('input', updateMap);
+        document.getElementById('currentInput').addEventListener('input', updateMap);
+        document.getElementById('completedInput').addEventListener('input', updateMap);
+
+        // Listen for level click events
+        interactiveMap.addEventListener('level-click', (event) => {
+            const { level } = event.detail;
+            logEvent(`Level ${level} clicked!`);
+        });
+
+        function updateMap() {
+            const theme = document.getElementById('themeSelect').value;
+            const layout = document.getElementById('layoutSelect').value;
+            const pathStyle = document.getElementById('pathStyleSelect').value;
+            const size = document.getElementById('sizeSelect').value;
+            const levels = document.getElementById('levelsInput').value;
+            const current = document.getElementById('currentInput').value;
+            const completed = document.getElementById('completedInput').value;
+
+            interactiveMap.setAttribute('theme', theme);
+            interactiveMap.setAttribute('layout', layout);
+            interactiveMap.setAttribute('path-style', pathStyle);
+            interactiveMap.setAttribute('size', size);
+            interactiveMap.setAttribute('levels', levels);
+            interactiveMap.setAttribute('current-level', current);
+            interactiveMap.setAttribute('completed-levels', completed);
+
+            logEvent(`Settings updated: ${levels} levels, current: ${current}, completed: ${completed}, theme: ${theme}`);
+        }
+
+        window.progressLevel = function() {
+            const current = parseInt(document.getElementById('currentInput').value);
+            const levels = parseInt(document.getElementById('levelsInput').value);
+            
+            if (current < levels) {
+                document.getElementById('currentInput').value = current + 1;
+                updateMap();
+                logEvent(`Progressed to level ${current + 1}`);
+            }
+        };
+
+        window.completeLevel = function() {
+            const current = parseInt(document.getElementById('currentInput').value);
+            const completed = parseInt(document.getElementById('completedInput').value);
+            
+            if (current > completed) {
+                document.getElementById('completedInput').value = current;
+                updateMap();
+                logEvent(`Completed level ${current}`);
+            }
+        };
+
+        window.resetProgress = function() {
+            document.getElementById('currentInput').value = 1;
+            document.getElementById('completedInput').value = 0;
+            updateMap();
+            logEvent('Progress reset to beginning');
+        };
+
+        window.randomizeSettings = function() {
+            const themes = ['adventure', 'space', 'fantasy', 'retro'];
+            const layouts = ['linear', 'circular', 'branching'];
+            const pathStyles = ['curved', 'straight', 'zigzag'];
+            const sizes = ['small', 'medium', 'large'];
+
+            document.getElementById('themeSelect').value = themes[Math.floor(Math.random() * themes.length)];
+            document.getElementById('layoutSelect').value = layouts[Math.floor(Math.random() * layouts.length)];
+            document.getElementById('pathStyleSelect').value = pathStyles[Math.floor(Math.random() * pathStyles.length)];
+            document.getElementById('sizeSelect').value = sizes[Math.floor(Math.random() * sizes.length)];
+            
+            const levels = Math.floor(Math.random() * 10) + 5;
+            const current = Math.floor(Math.random() * levels) + 1;
+            const completed = Math.floor(Math.random() * current);
+
+            document.getElementById('levelsInput').value = levels;
+            document.getElementById('currentInput').value = current;
+            document.getElementById('completedInput').value = completed;
+
+            updateMap();
+            logEvent('Settings randomized!');
+        };
+
+        function logEvent(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            eventLog.appendChild(logEntry);
+            eventLog.scrollTop = eventLog.scrollHeight;
+        }
+
+        // Initial log
+        logEvent('Interactive demo ready!');
+    </script>
+</body>
+</html>
