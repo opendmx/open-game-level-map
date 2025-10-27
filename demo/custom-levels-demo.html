@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Level Configuration Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 3px solid #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .demo-section {
+            margin: 40px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px solid #333;
+        }
+
+        .demo-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .demo-section h3 {
+            color: #444;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+
+        .demo-section p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .event-log {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            margin-top: 20px;
+        }
+
+        .event-log h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 5px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-list li strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Custom Level Configuration Demo</h1>
+        <p class="subtitle">Showcasing per-level customization features</p>
+        
+        <div class="demo-section">
+            <h2>1. Different Shapes</h2>
+            <p>Each level can have a different shape: circle, square, diamond, hexagon, or star.</p>
+            <game-level-map id="shapesDemo" 
+                           levels="5" 
+                           current-level="3" 
+                           completed-levels="1,2">
+            </game-level-map>
+        </div>
+
+        <div class="demo-section">
+            <h2>2. Custom Icons & Emojis</h2>
+            <p>Replace level numbers with custom icons or emojis.</p>
+            <game-level-map id="iconsDemo" 
+                           levels="6" 
+                           current-level="3" 
+                           completed-levels="1,2">
+            </game-level-map>
+        </div>
+
+        <div class="demo-section">
+            <h2>3. Custom Sizes</h2>
+            <p>Each level can have a different size.</p>
+            <game-level-map id="sizesDemo" 
+                           levels="5" 
+                           current-level="3" 
+                           completed-levels="1,2">
+            </game-level-map>
+        </div>
+
+        <div class="demo-section">
+            <h2>4. Custom Colors</h2>
+            <p>Override default colors for specific levels.</p>
+            <game-level-map id="colorsDemo" 
+                           levels="6" 
+                           current-level="4" 
+                           completed-levels="1,2,3">
+            </game-level-map>
+        </div>
+
+        <div class="demo-section">
+            <h2>5. Custom Animations</h2>
+            <p>Apply different animations to specific levels.</p>
+            <game-level-map id="animationsDemo" 
+                           levels="5" 
+                           current-level="3" 
+                           completed-levels="1,2">
+            </game-level-map>
+        </div>
+
+        <div class="demo-section">
+            <h2>6. Custom Text</h2>
+            <p>Replace level numbers with custom text.</p>
+            <game-level-map id="textDemo" 
+                           levels="5" 
+                           current-level="3" 
+                           completed-levels="1,2">
+            </game-level-map>
+        </div>
+
+        <div class="demo-section">
+            <h2>7. Combined Features</h2>
+            <p>Mix and match multiple customizations for a unique level map.</p>
+            <game-level-map id="combinedDemo" 
+                           levels="8" 
+                           current-level="4" 
+                           completed-levels="1,2,3">
+            </game-level-map>
+        </div>
+
+        <div class="demo-section">
+            <h2>8. Custom Click Actions</h2>
+            <p>Click on levels below to see custom click handlers in action.</p>
+            <game-level-map id="clickDemo" 
+                           levels="5" 
+                           current-level="3" 
+                           completed-levels="1,2">
+            </game-level-map>
+            
+            <div class="event-log">
+                <h3>Click Event Log</h3>
+                <div id="eventLog"></div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Configuration Examples</h2>
+            
+            <h3>JavaScript API</h3>
+            <div class="code-block">
+const levelMap = document.querySelector('game-level-map');
+
+// Set individual level configuration
+levelMap.setLevelConfig(1, {
+    shape: 'star',
+    icon: '🌟',
+    size: 50,
+    color: '#FFD700',
+    animation: 'bounce',
+    text: 'Start',
+    onClick: (data) => console.log('Level clicked:', data)
+});
+
+// Set multiple level configurations at once
+levelMap.setLevelConfigs({
+    1: { shape: 'circle', icon: '🏠' },
+    2: { shape: 'square', icon: '🌲' },
+    3: { shape: 'diamond', icon: '⛰️' },
+    4: { shape: 'hexagon', icon: '🏰' },
+    5: { shape: 'star', icon: '👑' }
+});
+            </div>
+
+            <h3>HTML Attribute (JSON)</h3>
+            <div class="code-block">
+&lt;game-level-map 
+    levels="5" 
+    current-level="3"
+    level-config='{
+        "1": {"shape": "star", "icon": "🌟"},
+        "2": {"shape": "square", "color": "#FF6B6B"},
+        "3": {"shape": "diamond", "animation": "pulse-large"}
+    }'&gt;
+&lt;/game-level-map&gt;
+            </div>
+
+            <h3>Available Options</h3>
+            <ul class="feature-list">
+                <li><strong>shape:</strong> 'circle', 'square', 'diamond', 'hexagon', 'star'</li>
+                <li><strong>size:</strong> Number (in pixels)</li>
+                <li><strong>icon:</strong> String (emoji or icon character)</li>
+                <li><strong>text:</strong> String (custom text instead of level number)</li>
+                <li><strong>color:</strong> String (hex color code)</li>
+                <li><strong>animation:</strong> 'bounce', 'spin', 'pulse-large', 'wiggle'</li>
+                <li><strong>onClick:</strong> Function (custom click handler)</li>
+                <li><strong>hideCompletionStar:</strong> Boolean (hide star on completed levels)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../src/game-level-map.js"></script>
+    <script>
+        // Demo 1: Different Shapes
+        const shapesDemo = document.getElementById('shapesDemo');
+        shapesDemo.setLevelConfigs({
+            1: { shape: 'circle' },
+            2: { shape: 'square' },
+            3: { shape: 'diamond' },
+            4: { shape: 'hexagon' },
+            5: { shape: 'star' }
+        });
+
+        // Demo 2: Custom Icons
+        const iconsDemo = document.getElementById('iconsDemo');
+        iconsDemo.setLevelConfigs({
+            1: { icon: '🏠' },
+            2: { icon: '🌲' },
+            3: { icon: '⛰️' },
+            4: { icon: '🏰' },
+            5: { icon: '👑' },
+            6: { icon: '🎯' }
+        });
+
+        // Demo 3: Custom Sizes
+        const sizesDemo = document.getElementById('sizesDemo');
+        sizesDemo.setLevelConfigs({
+            1: { size: 30 },
+            2: { size: 40 },
+            3: { size: 60 },
+            4: { size: 50 },
+            5: { size: 35 }
+        });
+
+        // Demo 4: Custom Colors
+        const colorsDemo = document.getElementById('colorsDemo');
+        colorsDemo.setLevelConfigs({
+            1: { color: '#FF6B6B' },
+            2: { color: '#4ECDC4' },
+            3: { color: '#45B7D1' },
+            4: { color: '#96CEB4' },
+            5: { color: '#FECA57' },
+            6: { color: '#A55EEA' }
+        });
+
+        // Demo 5: Custom Animations
+        const animationsDemo = document.getElementById('animationsDemo');
+        animationsDemo.setLevelConfigs({
+            1: { animation: 'bounce' },
+            2: { animation: 'spin' },
+            3: { animation: 'pulse-large' },
+            4: { animation: 'wiggle' },
+            5: { animation: 'bounce' }
+        });
+
+        // Demo 6: Custom Text
+        const textDemo = document.getElementById('textDemo');
+        textDemo.setLevelConfigs({
+            1: { text: 'Start' },
+            2: { text: 'Easy' },
+            3: { text: 'Med' },
+            4: { text: 'Hard' },
+            5: { text: 'Boss' }
+        });
+
+        // Demo 7: Combined Features
+        const combinedDemo = document.getElementById('combinedDemo');
+        combinedDemo.setLevelConfigs({
+            1: { shape: 'star', icon: '🌟', size: 45, animation: 'bounce' },
+            2: { shape: 'square', icon: '🌲', color: '#32CD32' },
+            3: { shape: 'diamond', icon: '⛰️', size: 50 },
+            4: { shape: 'hexagon', icon: '🏰', animation: 'pulse-large' },
+            5: { shape: 'star', icon: '🔥', color: '#FF6B6B' },
+            6: { shape: 'circle', icon: '💎', size: 55 },
+            7: { shape: 'square', icon: '🗝️', animation: 'spin' },
+            8: { shape: 'star', icon: '👑', size: 60, color: '#FFD700', animation: 'bounce' }
+        });
+
+        // Demo 8: Custom Click Actions
+        const clickDemo = document.getElementById('clickDemo');
+        const eventLog = document.getElementById('eventLog');
+        
+        function logEvent(message) {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            eventLog.appendChild(logEntry);
+            eventLog.scrollTop = eventLog.scrollHeight;
+        }
+
+        clickDemo.setLevelConfigs({
+            1: { 
+                icon: '🚀',
+                onClick: (data) => logEvent(`🚀 Rocket level clicked! (Level ${data.level}, State: ${data.state})`)
+            },
+            2: { 
+                icon: '⭐',
+                onClick: (data) => logEvent(`⭐ Star level clicked! (Level ${data.level}, State: ${data.state})`)
+            },
+            3: { 
+                icon: '🎯',
+                onClick: (data) => logEvent(`🎯 Target level clicked! (Level ${data.level}, State: ${data.state})`)
+            },
+            4: { 
+                icon: '🏆',
+                onClick: (data) => logEvent(`🏆 Trophy level clicked! (Level ${data.level}, State: ${data.state})`)
+            },
+            5: { 
+                icon: '👑',
+                onClick: (data) => logEvent(`👑 Crown level clicked! (Level ${data.level}, State: ${data.state})`)
+            }
+        });
+
+        // Also listen to the standard event
+        clickDemo.addEventListener('level-click', (event) => {
+            console.log('Level click event:', event.detail);
+        });
+
+        logEvent('Demo page loaded - click on levels above!');
+    </script>
+</body>
+</html>

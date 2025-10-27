@@ -79,7 +79,25 @@ python3 -m http.server 8000
 </game-level-map>
 ```
 
+### Custom Level Shapes and Icons
+```html
+<game-level-map 
+    levels="5" 
+    current-level="3" 
+    completed-levels="1,2"
+    level-config='{
+        "1": {"shape": "star", "icon": "🌟"},
+        "2": {"shape": "square", "icon": "🌲"},
+        "3": {"shape": "diamond", "icon": "⛰️"},
+        "4": {"shape": "hexagon", "icon": "🏰"},
+        "5": {"shape": "star", "icon": "👑"}
+    }'>
+</game-level-map>
+```
+
 ## ⚙️ Configuration Options
+
+### Global Attributes
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -87,8 +105,24 @@ python3 -m http.server 8000
 | `current-level` | number | 1 | Currently active level |
 | `completed-levels` | string | "" | Comma-separated completed levels |
 | `path-color` | string | "#8B4513" | Path color |
-| `marker-size` | number | 40 | Marker size in pixels |
+| `marker-size` | number | 40 | Default marker size in pixels |
 | `spacing` | number | 100 | Spacing between markers |
+| `level-config` | JSON string | "" | Per-level customization (see below) |
+
+### Per-Level Customization
+
+Each level can be individually customized with the following options:
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `shape` | string | Shape of the marker: 'circle', 'square', 'diamond', 'hexagon', 'star' |
+| `size` | number | Custom size for this level (overrides global marker-size) |
+| `icon` | string | Custom icon or emoji to display instead of level number |
+| `text` | string | Custom text to display instead of level number |
+| `color` | string | Custom color for this level (overrides state color) |
+| `animation` | string | Animation: 'bounce', 'spin', 'pulse-large', 'wiggle' |
+| `onClick` | function | Custom click handler (JavaScript API only) |
+| `hideCompletionStar` | boolean | Hide the completion star for this level |
 
 ## 🎮 JavaScript API
 
@@ -105,9 +139,35 @@ levelMap.setCompletedLevels([1, 2, 3, 4, 5, 6]);
 const currentLevel = levelMap.getCurrentLevel();
 const completed = levelMap.getCompletedLevels();
 
+// Configure individual levels
+levelMap.setLevelConfig(1, {
+    shape: 'star',
+    icon: '🌟',
+    size: 50,
+    color: '#FFD700',
+    animation: 'bounce',
+    text: 'Start',
+    onClick: (data) => {
+        console.log('Level clicked:', data);
+    }
+});
+
+// Configure multiple levels at once
+levelMap.setLevelConfigs({
+    1: { shape: 'circle', icon: '🏠' },
+    2: { shape: 'square', icon: '🌲' },
+    3: { shape: 'diamond', icon: '⛰️' },
+    4: { shape: 'hexagon', icon: '🏰' },
+    5: { shape: 'star', icon: '👑' }
+});
+
+// Get level configurations
+const levelConfig = levelMap.getLevelConfig(1);
+const allConfigs = levelMap.getLevelConfigs();
+
 // Listen for level clicks
 levelMap.addEventListener('level-click', (event) => {
-    const { level, state } = event.detail;
+    const { level, state, config } = event.detail;
     console.log(`Level ${level} clicked (${state})`);
 });
 ```
