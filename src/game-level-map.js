@@ -105,12 +105,19 @@ class GameLevelMap extends HTMLElement {
         // Parse levels - support both "1-5" string format and array [1,2,3,4,5]
         let levelArray = [];
         if (typeof section.levels === 'string' && section.levels.includes('-')) {
-          const [start, end] = section.levels.split('-').map(n => parseInt(n.trim()));
-          for (let i = start; i <= end; i++) {
-            levelArray.push(i);
+          const parts = section.levels.split('-').map(n => n.trim());
+          if (parts.length === 2) {
+            const start = parseInt(parts[0]);
+            const end = parseInt(parts[1]);
+            // Validate that both are valid numbers and start <= end
+            if (!isNaN(start) && !isNaN(end) && start <= end) {
+              for (let i = start; i <= end; i++) {
+                levelArray.push(i);
+              }
+            }
           }
         } else if (Array.isArray(section.levels)) {
-          levelArray = section.levels.map(l => parseInt(l));
+          levelArray = section.levels.map(l => parseInt(l)).filter(n => !isNaN(n));
         } else if (typeof section.levels === 'number') {
           levelArray = [section.levels];
         }
@@ -142,10 +149,6 @@ class GameLevelMap extends HTMLElement {
       
       const minLevel = Math.min(...section.levels);
       const maxLevel = Math.max(...section.levels);
-      
-      // Find the path points for this section
-      const sectionPoints = pathPoints.filter(p => section.levels.includes(p.level));
-      if (sectionPoints.length === 0) return;
       
       // Calculate section bounds
       const minX = minLevel * spacing - spacing / 2;
