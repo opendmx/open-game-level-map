@@ -1,0 +1,37 @@
+{
+  "name": "game-level-map-component",
+  "version": "1.0.0",
+  "description": "A reusable web component for displaying game level progress with comic-style graphics",
+  "main": "src/game-level-map.js",
+  "scripts": {
+    "demo": "cd demo && python3 -m http.server 8000",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "web-component",
+    "game",
+    "level-map",
+    "progress",
+    "comic-style",
+    "svg",
+    "interactive",
+    "custom-element"
+  ],
+  "author": "OpenDMX",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opendmx/open-game-level-map.git"
+  },
+  "files": [
+    "src/",
+    "docs/",
+    "demo/",
+    "README.md"
+  ],
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not dead"
+  ]
+}
