@@ -135,9 +135,16 @@ levelMap.setCurrentLevel(7);
 // Set completed levels
 levelMap.setCompletedLevels([1, 2, 3, 4, 5, 6]);
 
+// Set sections
+levelMap.setSections([
+    { name: 'Beginner', levels: '1-5', color: '#E8F5E9' },
+    { name: 'Advanced', levels: '6-10', color: '#FFEBEE' }
+]);
+
 // Get current state
 const currentLevel = levelMap.getCurrentLevel();
 const completed = levelMap.getCompletedLevels();
+const sections = levelMap.getSections();
 
 // Configure individual levels
 levelMap.setLevelConfig(1, {
@@ -170,6 +177,46 @@ levelMap.addEventListener('level-click', (event) => {
     const { level, state, config } = event.detail;
     console.log(`Level ${level} clicked (${state})`);
 });
+```
+
+## 📑 Sections Configuration
+
+Sections allow you to group levels with visual labels and backgrounds. Each section can have:
+
+- **name**: The label displayed for the section
+- **levels**: Range of levels as a string (e.g., "1-5") or array (e.g., [1,2,3,4,5])
+- **color**: Background color for the section (optional, defaults to "#f0f0f0")
+
+### Example with Multiple Sections
+
+```html
+<game-level-map 
+    levels="12" 
+    current-level="5"
+    completed-levels="1,2,3,4"
+    sections='[
+        {"name":"Tutorial","levels":"1-3","color":"#B3E5FC"},
+        {"name":"Easy","levels":"4-7","color":"#C8E6C9"},
+        {"name":"Hard","levels":"8-10","color":"#FFCCBC"},
+        {"name":"Expert","levels":"11-12","color":"#F8BBD0"}
+    ]'>
+</game-level-map>
+```
+
+### JavaScript API for Sections
+
+```javascript
+// Set sections programmatically
+const levelMap = document.querySelector('game-level-map');
+levelMap.setSections([
+    { name: 'Beginner', levels: '1-5', color: '#E8F5E9' },
+    { name: 'Intermediate', levels: '6-10', color: '#FFF3E0' },
+    { name: 'Advanced', levels: '11-15', color: '#FFEBEE' }
+]);
+
+// Get current sections
+const sections = levelMap.getSections();
+console.log('Current sections:', sections);
 ```
 
 ## 🌐 Browser Support
