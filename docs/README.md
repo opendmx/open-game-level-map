@@ -43,11 +43,28 @@ That's it! You now have a beautiful, interactive level map.
 | `current-level` | number | 1 | The currently active/unlocked level |
 | `completed-levels` | string | "" | Comma-separated list of completed level numbers |
 | `path-color` | string | "#8B4513" | Color of the path connecting levels |
-| `marker-size` | number | 40 | Size of level markers in pixels |
+| `marker-size` | number | 40 | Default size of level markers in pixels |
 | `spacing` | number | 100 | Horizontal spacing between level markers |
 | `width` | number | 800 | Container width (auto-calculated if not specified) |
 | `height` | number | 200 | Container height |
-| `sections` | string (JSON) | "" | JSON array defining level sections with names and colors |
+| `level-config` | JSON string | "" | Per-level customization configuration |
+
+### Per-Level Customization
+
+Each individual level can be customized with specific properties. This enables creating unique, engaging level maps with varied visual styles.
+
+#### Available Options
+
+| Option | Type | Description | Example |
+|--------|------|-------------|---------|
+| `shape` | string | Marker shape | 'circle', 'square', 'diamond', 'hexagon', 'star' |
+| `size` | number | Custom size in pixels | 50 |
+| `icon` | string | Custom icon/emoji | '🌟', '🏰', '👑' |
+| `text` | string | Custom text label | 'Start', 'Boss', 'Final' |
+| `color` | string | Custom color | '#FF6B6B', '#FFD700' |
+| `animation` | string | Animation type | 'bounce', 'spin', 'pulse-large', 'wiggle' |
+| `onClick` | function | Custom click handler (JS API only) | `(data) => {...}` |
+| `hideCompletionStar` | boolean | Hide completion star | true/false |
 
 ### Examples
 
@@ -80,61 +97,19 @@ That's it! You now have a beautiful, interactive level map.
 </game-level-map>
 ```
 
-#### Game with Sections
+#### Custom Level Configuration (HTML)
 ```html
 <game-level-map 
-    levels="15" 
-    current-level="8" 
-    completed-levels="1,2,3,4,5,6,7"
-    sections='[
-        {"name":"Beginner","levels":"1-5","color":"#E8F5E9"},
-        {"name":"Intermediate","levels":"6-10","color":"#FFF3E0"},
-        {"name":"Advanced","levels":"11-15","color":"#FFEBEE"}
-    ]'>
-</game-level-map>
-```
-
-## Sections Feature
-
-The sections feature allows you to group levels together with visual labels and backgrounds. This is perfect for organizing your game into difficulty levels, chapters, or themed groups.
-
-### Section Configuration
-
-Each section is defined by an object with the following properties:
-
-- **name** (string): The label displayed above the section
-- **levels** (string or array): The levels included in this section
-  - String format: `"1-5"` (range from level 1 to 5)
-  - Array format: `[1, 2, 3, 4, 5]`
-- **color** (string): The background color for the section (hex color code)
-
-### Examples
-
-#### Basic Sections
-```html
-<game-level-map 
-    levels="10" 
-    current-level="6"
-    completed-levels="1,2,3,4,5"
-    sections='[
-        {"name":"Easy","levels":"1-5","color":"#C8E6C9"},
-        {"name":"Hard","levels":"6-10","color":"#FFCCBC"}
-    ]'>
-</game-level-map>
-```
-
-#### Multiple Small Sections
-```html
-<game-level-map 
-    levels="12" 
-    current-level="5"
-    completed-levels="1,2,3,4"
-    sections='[
-        {"name":"Tutorial","levels":"1-3","color":"#B3E5FC"},
-        {"name":"Easy Challenges","levels":"4-7","color":"#C8E6C9"},
-        {"name":"Hard Challenges","levels":"8-10","color":"#FFCCBC"},
-        {"name":"Expert Mode","levels":"11-12","color":"#F8BBD0"}
-    ]'>
+    levels="5" 
+    current-level="3" 
+    completed-levels="1,2"
+    level-config='{
+        "1": {"shape": "star", "icon": "🌟", "animation": "bounce"},
+        "2": {"shape": "square", "icon": "🌲", "color": "#32CD32"},
+        "3": {"shape": "diamond", "icon": "⛰️", "size": 50},
+        "4": {"shape": "hexagon", "icon": "🏰", "animation": "pulse-large"},
+        "5": {"shape": "star", "icon": "👑", "color": "#FFD700", "size": 60}
+    }'>
 </game-level-map>
 ```
 
@@ -169,21 +144,56 @@ const completed = levelMap.getCompletedLevels();
 console.log('Completed levels:', completed);
 ```
 
-#### `setSections(sections)`
-Set the sections configuration.
+#### `setLevelConfig(level, config)`
+Set configuration for a specific level.
 ```javascript
-levelMap.setSections([
-    { name: 'Beginner', levels: '1-5', color: '#E8F5E9' },
-    { name: 'Intermediate', levels: '6-10', color: '#FFF3E0' },
-    { name: 'Advanced', levels: '11-15', color: '#FFEBEE' }
-]);
+levelMap.setLevelConfig(1, {
+    shape: 'star',
+    icon: '🌟',
+    size: 50,
+    color: '#FFD700',
+    animation: 'bounce',
+    text: 'Start',
+    onClick: (data) => {
+        console.log('Level clicked:', data.level);
+    }
+});
 ```
 
-#### `getSections()`
-Get the array of section configurations.
+#### `getLevelConfig(level)`
+Get configuration for a specific level.
 ```javascript
-const sections = levelMap.getSections();
-console.log('Sections:', sections);
+const config = levelMap.getLevelConfig(1);
+console.log('Level 1 config:', config);
+```
+
+#### `setLevelConfigs(configs)`
+Set configurations for multiple levels at once.
+```javascript
+levelMap.setLevelConfigs({
+    1: { shape: 'circle', icon: '🏠' },
+    2: { shape: 'square', icon: '🌲' },
+    3: { shape: 'diamond', icon: '⛰️' },
+    4: { shape: 'hexagon', icon: '🏰' },
+    5: { shape: 'star', icon: '👑' }
+});
+```
+
+#### `getLevelConfigs()`
+Get all level configurations.
+```javascript
+const allConfigs = levelMap.getLevelConfigs();
+console.log('All level configs:', allConfigs);
+```
+const currentLevel = levelMap.getCurrentLevel();
+console.log('Current level:', currentLevel);
+```
+
+#### `getCompletedLevels()`
+Get the array of completed levels.
+```javascript
+const completed = levelMap.getCompletedLevels();
+console.log('Completed levels:', completed);
 ```
 
 ### Events

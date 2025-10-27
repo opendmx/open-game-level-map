@@ -26,6 +26,9 @@ class GameLevelMap extends HTMLElement {
         path: '#8B4513'
       }
     };
+    
+    // Per-level customizations
+    this._levelConfigs = {};
   }
 
   static get observedAttributes() {
@@ -38,7 +41,7 @@ class GameLevelMap extends HTMLElement {
       'spacing',
       'width',
       'height',
-      'sections'
+      'level-config'
     ];
   }
 
@@ -75,8 +78,13 @@ class GameLevelMap extends HTMLElement {
       case 'height':
         this._config.containerHeight = parseInt(value) || 200;
         break;
-      case 'sections':
-        this._config.sections = this.parseSections(value);
+      case 'level-config':
+        try {
+          this._levelConfigs = value ? JSON.parse(value) : {};
+        } catch (e) {
+          console.error('Invalid level-config JSON:', e);
+          this._levelConfigs = {};
+        }
         break;
     }
   }
@@ -230,29 +238,117 @@ class GameLevelMap extends HTMLElement {
   }
 
   createMarker(point, state) {
+    const levelConfig = this._levelConfigs[point.level] || {};
     const { markerSize, colors } = this._config;
-    const radius = markerSize / 2;
     
-    // Create comic-style marker with stroke
+    // Get level-specific settings or fall back to defaults
+    const size = levelConfig.size || markerSize;
+    const radius = size / 2;
+    const shape = levelConfig.shape || 'circle';
+    const icon = levelConfig.icon;
+    const text = levelConfig.text !== undefined ? levelConfig.text : point.level;
+    const color = levelConfig.color || colors[state];
+    const animation = levelConfig.animation;
+    
+    // Create the shape based on configuration
+    let shapeElement = '';
+    switch (shape) {
+      case 'square':
+        shapeElement = this.createSquare(point.x, point.y, size, color);
+        break;
+      case 'star':
+        shapeElement = this.createStarShape(point.x, point.y, size, color);
+        break;
+      case 'diamond':
+        shapeElement = this.createDiamond(point.x, point.y, size, color);
+        break;
+      case 'hexagon':
+        shapeElement = this.createHexagon(point.x, point.y, size, color);
+        break;
+      case 'circle':
+      default:
+        shapeElement = this.createCircle(point.x, point.y, radius, color);
+        break;
+    }
+    
+    // Apply custom animation class if specified
+    const animationClass = animation ? `custom-animation-${animation}` : '';
+    
+    // Create comic-style marker
     const markerGroup = `
-      <g class="level-marker" data-level="${point.level}" data-state="${state}">
+      <g class="level-marker ${animationClass}" data-level="${point.level}" data-state="${state}">
         <!-- Outer glow for comic effect -->
         <circle cx="${point.x}" cy="${point.y}" r="${radius + 3}" 
-                fill="${colors[state]}" opacity="0.3" class="marker-glow"/>
-        <!-- Main marker -->
-        <circle cx="${point.x}" cy="${point.y}" r="${radius}" 
-                fill="${colors[state]}" stroke="#333" stroke-width="3" class="marker-body"/>
-        <!-- Level number -->
-        <text x="${point.x}" y="${point.y + 5}" text-anchor="middle" 
-              class="level-text" fill="#333" font-weight="bold" font-size="${markerSize * 0.4}px">
-          ${point.level}
-        </text>
+                fill="${color}" opacity="0.3" class="marker-glow"/>
+        <!-- Main marker shape -->
+        ${shapeElement}
+        ${icon ? this.createIconContent(point.x, point.y, icon, size) : this.createTextContent(point.x, point.y, text, size)}
         <!-- Star for completed levels -->
-        ${state === 'completed' ? this.createStar(point.x, point.y - radius - 10) : ''}
+        ${state === 'completed' && !levelConfig.hideCompletionStar ? this.createStar(point.x, point.y - radius - 10) : ''}
       </g>
     `;
     
     return markerGroup;
+  }
+
+  createCircle(x, y, radius, color) {
+    return `<circle cx="${x}" cy="${y}" r="${radius}" 
+            fill="${color}" stroke="#333" stroke-width="3" class="marker-body"/>`;
+  }
+
+  createSquare(x, y, size, color) {
+    const half = size / 2;
+    return `<rect x="${x - half}" y="${y - half}" width="${size}" height="${size}" 
+            fill="${color}" stroke="#333" stroke-width="3" class="marker-body" rx="5"/>`;
+  }
+
+  createDiamond(x, y, size, color) {
+    const half = size / 2;
+    const points = `${x},${y - half} ${x + half},${y} ${x},${y + half} ${x - half},${y}`;
+    return `<polygon points="${points}" 
+            fill="${color}" stroke="#333" stroke-width="3" class="marker-body"/>`;
+  }
+
+  createHexagon(x, y, size, color) {
+    const radius = size / 2;
+    const points = [];
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 3) * i - Math.PI / 6;
+      const px = x + radius * Math.cos(angle);
+      const py = y + radius * Math.sin(angle);
+      points.push(`${px},${py}`);
+    }
+    return `<polygon points="${points.join(' ')}" 
+            fill="${color}" stroke="#333" stroke-width="3" class="marker-body"/>`;
+  }
+
+  createStarShape(x, y, size, color) {
+    const outerRadius = size / 2;
+    const innerRadius = size / 4;
+    const points = [];
+    for (let i = 0; i < 10; i++) {
+      const radius = i % 2 === 0 ? outerRadius : innerRadius;
+      const angle = (Math.PI / 5) * i - Math.PI / 2;
+      const px = x + radius * Math.cos(angle);
+      const py = y + radius * Math.sin(angle);
+      points.push(`${px},${py}`);
+    }
+    return `<polygon points="${points.join(' ')}" 
+            fill="${color}" stroke="#333" stroke-width="3" class="marker-body"/>`;
+  }
+
+  createIconContent(x, y, icon, size) {
+    return `<text x="${x}" y="${y + size * 0.15}" text-anchor="middle" 
+            class="level-icon" fill="#333" font-size="${size * 0.6}px">
+      ${icon}
+    </text>`;
+  }
+
+  createTextContent(x, y, text, size) {
+    return `<text x="${x}" y="${y + 5}" text-anchor="middle" 
+            class="level-text" fill="#333" font-weight="bold" font-size="${size * 0.4}px">
+      ${text}
+    </text>`;
   }
 
   createStar(x, y) {
@@ -327,6 +423,11 @@ class GameLevelMap extends HTMLElement {
           font-family: 'Comic Sans MS', cursive, sans-serif;
         }
         
+        .level-icon {
+          pointer-events: none;
+          font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        
         .completion-star {
           animation: sparkle 2s infinite;
         }
@@ -345,28 +446,42 @@ class GameLevelMap extends HTMLElement {
           50% { opacity: 0.6; }
         }
         
-        /* Section styles */
-        .section-group {
-          pointer-events: none;
+        /* Custom animations for level markers */
+        .custom-animation-bounce {
+          animation: bounce 1s infinite;
         }
         
-        .section-background {
-          transition: opacity 0.3s ease;
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
         }
         
-        .section-border {
-          animation: dash 20s linear infinite;
+        .custom-animation-spin {
+          animation: spin 3s linear infinite;
         }
         
-        @keyframes dash {
-          to {
-            stroke-dashoffset: -100;
-          }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
         
-        .section-label {
-          font-family: 'Comic Sans MS', cursive, sans-serif;
-          text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        .custom-animation-pulse-large {
+          animation: pulse-large 1.5s infinite;
+        }
+        
+        @keyframes pulse-large {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.15); }
+        }
+        
+        .custom-animation-wiggle {
+          animation: wiggle 2s infinite;
+        }
+        
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-5deg); }
+          75% { transform: rotate(5deg); }
         }
         
         /* Responsive design */
@@ -410,10 +525,16 @@ class GameLevelMap extends HTMLElement {
       marker.addEventListener('click', (e) => {
         const level = parseInt(marker.dataset.level);
         const state = marker.dataset.state;
+        const levelConfig = this._levelConfigs[level] || {};
+        
+        // If there's a custom click handler, execute it
+        if (levelConfig.onClick && typeof levelConfig.onClick === 'function') {
+          levelConfig.onClick({ level, state, event: e });
+        }
         
         // Dispatch custom event
         this.dispatchEvent(new CustomEvent('level-click', {
-          detail: { level, state },
+          detail: { level, state, config: levelConfig },
           bubbles: true
         }));
       });
@@ -438,14 +559,24 @@ class GameLevelMap extends HTMLElement {
   getCompletedLevels() {
     return [...this._config.completedLevels];
   }
-
-  setSections(sections) {
-    this._config.sections = sections;
-    this.setAttribute('sections', JSON.stringify(sections));
+  
+  // New methods for per-level configuration
+  setLevelConfig(level, config) {
+    this._levelConfigs[level] = config;
+    this.render();
   }
-
-  getSections() {
-    return [...this._config.sections];
+  
+  getLevelConfig(level) {
+    return this._levelConfigs[level] || null;
+  }
+  
+  setLevelConfigs(configs) {
+    this._levelConfigs = configs;
+    this.setAttribute('level-config', JSON.stringify(configs));
+  }
+  
+  getLevelConfigs() {
+    return { ...this._levelConfigs };
   }
 }
 
