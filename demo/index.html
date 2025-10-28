@@ -209,6 +209,13 @@
                 </a> 
                 to see shapes, icons, animations, and more! ✨
             </p>
+            <p style="font-size: 1.1em; margin-top: 10px;">
+                📚 <strong>Also check:</strong> 
+                <a href="educational-demo.html" style="color: #4CAF50; text-decoration: none; font-weight: bold; border-bottom: 2px solid #4CAF50;">
+                    Educational Learning Path Demo
+                </a> 
+                - See how to implement lesson replay functionality!
+            </p>
         </div>
         
         <div class="demo-section">
@@ -399,7 +406,19 @@
         // Add event listener for level clicks
         mainDemo.addEventListener('level-click', (event) => {
             const { level, state } = event.detail;
-            logEvent(`Level ${level} clicked (state: ${state})`);
+            
+            // Handle different level states
+            if (state === 'completed') {
+                logEvent(`Level ${level} clicked - Replaying completed level!`);
+                // In a real app, this would trigger the level/lesson content again
+                // For example: loadLevelContent(level) or startLesson(level)
+            } else if (state === 'current') {
+                logEvent(`Level ${level} clicked - Starting current level!`);
+                // In a real app: startCurrentLevel(level)
+            } else if (state === 'locked') {
+                logEvent(`Level ${level} clicked - This level is locked. Complete previous levels first.`);
+                // In a real app: showLockedMessage()
+            }
         });
 
         function logEvent(message) {

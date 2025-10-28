@@ -411,6 +411,65 @@ function completeCurrentLevel() {
 }
 ```
 
+### Level Replay for Educational Apps
+
+```javascript
+// Educational app pattern: Allow replaying completed lessons
+levelMap.addEventListener('level-click', (event) => {
+    const { level, state } = event.detail;
+    
+    if (state === 'completed') {
+        // Replay completed lesson
+        replayLesson(level);
+    } else if (state === 'current') {
+        // Start current lesson
+        startLesson(level);
+    } else if (state === 'locked') {
+        // Show locked message
+        showLockedMessage();
+    }
+});
+
+function replayLesson(levelNumber) {
+    // Load the lesson content for this level
+    const lessonData = getLessonData(levelNumber);
+    
+    // Display lesson with replay indicator
+    displayLesson(lessonData, { isReplay: true });
+    
+    // Track replay for analytics
+    trackEvent('lesson_replayed', { level: levelNumber });
+}
+
+function startLesson(levelNumber) {
+    const lessonData = getLessonData(levelNumber);
+    displayLesson(lessonData, { isReplay: false });
+}
+```
+
+### Spaced Repetition Pattern
+
+```javascript
+// Track when levels were completed for spaced repetition
+const completionHistory = {};
+
+levelMap.addEventListener('level-click', (event) => {
+    const { level, state } = event.detail;
+    
+    if (state === 'completed') {
+        const lastCompleted = completionHistory[level];
+        const daysSinceCompletion = getDaysSince(lastCompleted);
+        
+        // Suggest replay based on spaced repetition algorithm
+        if (daysSinceCompletion >= 7) {
+            showReviewSuggestion(level, "It's been a week - time to review!");
+        }
+        
+        replayLevel(level);
+    }
+});
+```
+
 ## Accessibility
 
 The component includes built-in accessibility features:
