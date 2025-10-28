@@ -369,27 +369,50 @@
                 const currentLevel = learningMap.getCurrentLevel();
                 const completed = learningMap.getCompletedLevels();
                 
-                if (!completed.includes(level)) {
+                // Only allow completing the current level to prevent skipping
+                if (level === currentLevel && !completed.includes(level)) {
                     completed.push(level);
                     learningMap.setCompletedLevels(completed);
+                    
+                    const totalLevels = parseInt(learningMap.getAttribute('levels'));
+                    if (currentLevel < totalLevels) {
+                        learningMap.setCurrentLevel(currentLevel + 1);
+                    }
+                    
+                    updateStats();
+                    
+                    lessonContent.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <h2 style="color: #4CAF50;">🎉 Lesson ${level} Complete!</h2>
+                            <p style="margin-top: 15px;">Excellent work! You can replay this lesson anytime by clicking on it.</p>
+                            <button class="btn" onclick="goToNextLesson()" style="margin-top: 20px;">
+                                Continue to Next Lesson
+                            </button>
+                        </div>
+                    `;
+                } else if (level !== currentLevel) {
+                    // Trying to complete a level out of order
+                    lessonContent.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <h2 style="color: #FF9800;">⚠️ Complete levels in order</h2>
+                            <p style="margin-top: 15px;">Please complete lesson ${currentLevel} first.</p>
+                            <button class="btn" onclick="goToNextLesson()" style="margin-top: 20px;">
+                                Go to Current Lesson
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Already completed, just show message
+                    lessonContent.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <h2 style="color: #4CAF50;">✅ Already Complete!</h2>
+                            <p style="margin-top: 15px;">You've already completed this lesson.</p>
+                            <button class="btn" onclick="goToNextLesson()" style="margin-top: 20px;">
+                                Continue to Next Lesson
+                            </button>
+                        </div>
+                    `;
                 }
-                
-                const totalLevels = parseInt(learningMap.getAttribute('levels'));
-                if (currentLevel < totalLevels) {
-                    learningMap.setCurrentLevel(currentLevel + 1);
-                }
-                
-                updateStats();
-                
-                lessonContent.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <h2 style="color: #4CAF50;">🎉 Lesson ${level} Complete!</h2>
-                        <p style="margin-top: 15px;">Excellent work! You can replay this lesson anytime by clicking on it.</p>
-                        <button class="btn" onclick="goToNextLesson()" style="margin-top: 20px;">
-                            Continue to Next Lesson
-                        </button>
-                    </div>
-                `;
             }
         }
 

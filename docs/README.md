@@ -462,7 +462,7 @@ levelMap.addEventListener('level-click', (event) => {
         
         // Suggest replay based on spaced repetition algorithm
         if (daysSinceCompletion >= 7) {
-            showReviewSuggestion(level, 'It\'s been a week - time to review!');
+            showReviewSuggestion(level, "It's been a week - time to review!");
         }
         
         replayLevel(level);
