@@ -49,6 +49,7 @@ python3 -m http.server 8000
 
 - **[Complete Documentation](docs/README.md)** - Detailed usage guide and API reference
 - **[Live Demo](demo/index.html)** - Interactive examples and configuration
+- **[Educational Demo](demo/educational-demo.html)** - Learn how to implement lesson replay functionality
 - **[Component Source](src/game-level-map.js)** - Main component code
 
 ## 🎯 Basic Examples

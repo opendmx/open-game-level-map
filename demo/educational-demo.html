@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Use Case - Level Replay Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 3px solid #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            margin-bottom: 10px;
+            color: #1976D2;
+        }
+
+        .lesson-content {
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+        }
+
+        .lesson-content h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .lesson-notes {
+            background: #fffde7;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .lesson-notes h4 {
+            color: #F57C00;
+            margin-bottom: 10px;
+        }
+
+        .lesson-notes ul {
+            margin-left: 20px;
+        }
+
+        .lesson-notes li {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: 2px solid #333;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Educational Learning Path</h1>
+        <p class="subtitle">Click on any level to start or replay lessons</p>
+
+        <div class="info-box">
+            <h3>💡 How it works:</h3>
+            <p><strong>Green levels (✓)</strong>: Completed lessons - Click to replay and review<br>
+            <strong>Gold level (current)</strong>: Your next lesson - Click to continue<br>
+            <strong>Gray levels</strong>: Locked lessons - Complete previous lessons to unlock</p>
+        </div>
+
+        <game-level-map id="learningMap" 
+                       levels="8" 
+                       current-level="4" 
+                       completed-levels="1,2,3"
+                       path-color="#667eea"
+                       width="900"
+                       height="200">
+        </game-level-map>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="completedCount">3</h3>
+                <p>Lessons Completed</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="currentLevelNum">4</h3>
+                <p>Current Lesson</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalLevels">8</h3>
+                <p>Total Lessons</p>
+            </div>
+        </div>
+
+        <div class="lesson-content" id="lessonContent">
+            <div class="empty-state">
+                👆 Click on a level above to start or replay a lesson
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/game-level-map.js"></script>
+    <script>
+        // Simulated lesson data
+        const lessons = {
+            1: {
+                title: "Introduction to Variables",
+                notes: [
+                    "Variables store data in your program",
+                    "Use 'let' for values that can change",
+                    "Use 'const' for values that stay the same",
+                    "Variable names should be descriptive"
+                ]
+            },
+            2: {
+                title: "Understanding Functions",
+                notes: [
+                    "Functions are reusable blocks of code",
+                    "Functions can take parameters (inputs)",
+                    "Functions can return values (outputs)",
+                    "Use functions to organize your code"
+                ]
+            },
+            3: {
+                title: "Working with Arrays",
+                notes: [
+                    "Arrays store multiple values in order",
+                    "Access items by their index (position)",
+                    "Arrays have many useful methods (push, pop, map, filter)",
+                    "Arrays are zero-indexed (first item is at index 0)"
+                ]
+            },
+            4: {
+                title: "Control Flow: If/Else",
+                notes: [
+                    "If statements execute code based on conditions",
+                    "Use else to handle alternative cases",
+                    "Combine conditions with && (AND) and || (OR)",
+                    "Use else if for multiple conditions"
+                ]
+            },
+            5: {
+                title: "Loops and Iteration",
+                notes: [
+                    "Loops repeat code multiple times",
+                    "for loops are good when you know how many times to repeat",
+                    "while loops continue until a condition is false",
+                    "forEach is great for iterating over arrays"
+                ]
+            },
+            6: {
+                title: "Objects and Properties",
+                notes: [
+                    "Objects store related data together",
+                    "Access properties with dot notation or brackets",
+                    "Objects can contain functions (methods)",
+                    "Objects are great for modeling real-world things"
+                ]
+            },
+            7: {
+                title: "Asynchronous JavaScript",
+                notes: [
+                    "Async code doesn't block other operations",
+                    "Promises represent future values",
+                    "Use async/await for cleaner async code",
+                    "Handle errors with try/catch blocks"
+                ]
+            },
+            8: {
+                title: "DOM Manipulation",
+                notes: [
+                    "The DOM represents your HTML as objects",
+                    "querySelector selects elements",
+                    "addEventListener adds interactivity",
+                    "Modify content, styles, and structure dynamically"
+                ]
+            }
+        };
+
+        const learningMap = document.getElementById('learningMap');
+        const lessonContent = document.getElementById('lessonContent');
+
+        // Handle level clicks
+        learningMap.addEventListener('level-click', (event) => {
+            const { level, state } = event.detail;
+            
+            if (state === 'completed') {
+                // Allow replaying completed lessons
+                displayLesson(level, true);
+            } else if (state === 'current') {
+                // Start the current lesson
+                displayLesson(level, false);
+            } else if (state === 'locked') {
+                // Show locked message
+                showLockedMessage(level);
+            }
+        });
+
+        function displayLesson(level, isReplay) {
+            const lesson = lessons[level];
+            
+            if (!lesson) {
+                lessonContent.innerHTML = '<div class="empty-state">Lesson not found</div>';
+                return;
+            }
+
+            const replayBadge = isReplay ? ' <span style="background: #4CAF50; color: white; padding: 3px 8px; border-radius: 5px; font-size: 0.7em;">REPLAY</span>' : '';
+            
+            lessonContent.innerHTML = `
+                <h2>Level ${level}: ${lesson.title}${replayBadge}</h2>
+                <p>${isReplay ? '📖 Reviewing this lesson to reinforce your knowledge!' : '🎯 Let\'s learn something new!'}</p>
+                
+                <div class="lesson-notes">
+                    <h4>📝 Key Notes:</h4>
+                    <ul>
+                        ${lesson.notes.map(note => `<li>${note}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="completeLesson(${level}, ${isReplay})">
+                        ${isReplay ? '✓ Review Complete' : '✓ Complete Lesson'}
+                    </button>
+                    <button class="btn btn-secondary" onclick="showQuiz(${level})">
+                        📝 Take Quiz
+                    </button>
+                </div>
+            `;
+        }
+
+        function showLockedMessage(level) {
+            lessonContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: #999;">🔒 Lesson ${level} is Locked</h2>
+                    <p style="color: #666; margin-top: 10px;">
+                        Complete the previous lessons to unlock this one!
+                    </p>
+                </div>
+            `;
+        }
+
+        function completeLesson(level, wasReplay) {
+            if (wasReplay) {
+                lessonContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h2 style="color: #4CAF50;">✅ Review Complete!</h2>
+                        <p style="margin-top: 15px;">Great job reviewing Lesson ${level}! Repetition is key to mastery.</p>
+                        <button class="btn" onclick="goToNextLesson()" style="margin-top: 20px;">
+                            Continue to Current Lesson
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Mark level as completed and advance
+                const currentLevel = learningMap.getCurrentLevel();
+                const completed = learningMap.getCompletedLevels();
+                
+                if (!completed.includes(level)) {
+                    completed.push(level);
+                    learningMap.setCompletedLevels(completed);
+                }
+                
+                const totalLevels = parseInt(learningMap.getAttribute('levels'));
+                if (currentLevel < totalLevels) {
+                    learningMap.setCurrentLevel(currentLevel + 1);
+                }
+                
+                updateStats();
+                
+                lessonContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h2 style="color: #4CAF50;">🎉 Lesson ${level} Complete!</h2>
+                        <p style="margin-top: 15px;">Excellent work! You can replay this lesson anytime by clicking on it.</p>
+                        <button class="btn" onclick="goToNextLesson()" style="margin-top: 20px;">
+                            Continue to Next Lesson
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function goToNextLesson() {
+            const currentLevel = learningMap.getCurrentLevel();
+            displayLesson(currentLevel, false);
+        }
+
+        function showQuiz(level) {
+            lessonContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: #667eea;">📝 Quiz for Lesson ${level}</h2>
+                    <p style="margin-top: 15px;">Quiz functionality would be implemented here.<br>
+                    Questions would be based on the notes from this level.</p>
+                    <button class="btn" onclick="displayLesson(${level}, false)" style="margin-top: 20px;">
+                        Back to Lesson
+                    </button>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            const completed = learningMap.getCompletedLevels();
+            const currentLevel = learningMap.getCurrentLevel();
+            const totalLevels = parseInt(learningMap.getAttribute('levels'));
+            
+            document.getElementById('completedCount').textContent = completed.length;
+            document.getElementById('currentLevelNum').textContent = currentLevel;
+            document.getElementById('totalLevels').textContent = totalLevels;
+        }
+
+        // Initialize stats on page load
+        updateStats();
+    </script>
+</body>
+</html>
